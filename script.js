@@ -38,7 +38,7 @@ function handleVirtualKeyPress(keyElement){
     keyElement.classList.add('active');
     setTimeout(function(){
             keyElement.classList.remove('active');
-        }, 150);
+        }, 15);
         processKey(key);
 }
 
@@ -74,7 +74,7 @@ let keyMap = {
   'KeyZ': 'z', 'KeyX': 'x', 'KeyC': 'c', 'KeyV': 'v', 'KeyB': 'b',
   'KeyN': 'n', 'KeyM': 'm',
   'Comma': ',', 'Period': '.', 'Slash': '/',
-  'Space': 'Space', 'Enter': 'Enter', 'Backspace': 'Backspace',
+  'Space': 'Space',' ':'Space', 'Enter': 'Enter', 'Backspace': 'Backspace',
   'Tab': 'Tab', 'CapsLock': 'CapsLock',
   'ShiftLeft': 'ShiftLeft', 'ShiftRight': 'ShiftRight',
   'ControlLeft': 'ControlLeft', 'ControlRight': 'ControlRight',
@@ -82,6 +82,10 @@ let keyMap = {
 };
 
     let mappedKey=keyMap[keyCode] || keyCode;
+    if (mappedKey === '\\') {
+    return document.querySelector('[data-key="\\\\"]') || document.querySelector('[data-key="\\"]');
+}
+
     return document.querySelector('[data-key="'+ mappedKey +'"]');
 }
 
@@ -104,9 +108,13 @@ function processKey(key){
     else if(key==='ControlLeft' || key==='ControlRight' || key==='AltLeft' || key==='AltRight'){
 
     }
-    else if(key==='Space'){
+    else if(key==='Space' || key===' '){
         insertText(' ');
     }
+    else if (key === '\\') {
+    insertCharacter('\\');
+}
+
     else if(key.length===1){
         insertCharacter(key);
     }
@@ -140,17 +148,34 @@ function insertCharacter(char){
     }
 }
 
-function insertText(text){
-    let selection=window.getSelection();
-    if(selection.rangeCount>0){
-        let range=selection.getRangeAt(0);
-        range.deleteContents();
-        range.insertNode(document.createTextNode(text));
-        range.collapse(false);
-        selection.removeAllRanges();
-        selection.addRange(range);
+function insertText(text) {
+    const selection = window.getSelection();
+    if (selection.rangeCount === 0) return;
+
+    const range = selection.getRangeAt(0);
+    range.deleteContents();
+
+    // Handle special cases
+    if (text === '\n') {
+        const br = document.createElement('br');
+        range.insertNode(br);
+        range.setStartAfter(br);
+    } else if (text === '\t') {
+        const tabNode = document.createTextNode('\u00A0\u00A0\u00A0\u00A0'); // 4 spaces
+        range.insertNode(tabNode);
+        range.setStartAfter(tabNode);
+    } else {
+        const node = document.createTextNode(text === ' ' ? '\u00A0' : text);
+        range.insertNode(node);
+        range.setStartAfter(node);
     }
+
+    range.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(range);
 }
+
+
 
 function handleBackspace(){
     let selection=window.getSelection();
