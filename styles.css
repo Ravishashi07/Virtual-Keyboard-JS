@@ -1,0 +1,118 @@
+body{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    height:100vh;
+    background:whitesmoke;
+    margin:0;
+    box-sizing: border-box;
+    padding:10px;
+
+}
+
+.textContainer{
+    width:90vw;
+    height:20vh;
+    background:white;
+    box-shadow: 0 0 20px 2px grey;
+    border-radius: 10px;
+    outline:none;
+    padding:25px;
+    font-size:30px;
+    font-family:'Poppins', sans-serif,Arial, Helvetica;
+    overflow-y:auto;
+    line-height:1.2;
+
+}
+.keyboard{
+    height:50vh;
+    width:75vw;
+    background-color: #004134;
+    border-radius: 25px;
+    padding:20px;
+    display: flex;
+    flex-direction: column;
+    gap:10px;
+    justify-content: space-between;
+}
+
+.row{
+
+    display: flex;
+    justify-content: center;
+    gap:8px;
+    flex:1;
+}
+
+.key{
+    color:#fff;
+    background: rgba(255, 255, 255, 0.2);
+    border:none;
+    border-radius: 8px;
+    font-family:'Poppins', sans-serif;
+    font-size:14px;
+    font-weight:500;
+    cursor:pointer;
+    transition:all 0.005s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height:45px;
+    flex:1;
+    max-width:60px;
+
+}
+.key:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+.key:active{
+    background: rgba(255, 255, 255, 0.1);
+}
+.key.wide{
+    flex:1.5;
+    max-width:80px;
+
+}
+.key.extra-wide{
+    flex:2;
+    max-width:120px;
+}
+ .key.space {
+    flex: 6;
+    max-width: 450px;
+}
+
+.key.shift {
+    flex: 2.25;
+    max-width: 100px;
+}
+
+.key.ctrl {
+    flex: 1.25;
+    max-width: 75px;
+}
+
+.key.alt {
+    flex: 1.25;
+    max-width: 75px;
+}
+
+.key.caps-lock {
+    flex: 1.75;
+    max-width: 110px;
+}
+.key.enter {
+    flex: 2.25;
+    max-width: 135px;
+}
+.key.back{
+    flex:1.5;
+    max-width:100px;
+
+}
+.key.active{
+    background-color: rgba(0, 0, 0, 0.315);
+}
