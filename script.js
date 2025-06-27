@@ -179,13 +179,12 @@ function insertText(text) {
     const range = selection.getRangeAt(0);
     range.deleteContents();
 
-    // Handle special cases
     if (text === '\n') {
         const br = document.createElement('br');
         range.insertNode(br);
         range.setStartAfter(br);
     } else if (text === '\t') {
-        const tabNode = document.createTextNode('\u00A0\u00A0\u00A0\u00A0'); // 4 spaces
+        const tabNode = document.createTextNode('\u00A0\u00A0\u00A0\u00A0'); 
         range.insertNode(tabNode);
         range.setStartAfter(tabNode);
     } else {
@@ -229,16 +228,18 @@ function updateLetterCase() {
 
     letterKeys.forEach(key => {
         let keyVal = key.getAttribute('data-key');
-
         if (/^[a-z]$/.test(keyVal)) {
-            key.textContent = capsLock ? keyVal.toUpperCase() : keyVal.toLowerCase();
+            let isUpper = capsLock ^ shift; 
+            key.textContent = isUpper ? keyVal.toUpperCase() : keyVal.toLowerCase();
         }
     });
 }
 
+
 function toggleShift(){
     shift=!shift;
     updateShiftKeys();
+    updateLetterCase();
 }
 
 function updateShiftKeys(){
