@@ -2,35 +2,56 @@ let textArea;
 let keyboard;
 let capsLock=false;
 let shift=false;
+let holdTimeout;
+let keyRepeatInterval;
+
+
 
 function startKeyboard(){
     textArea=document.querySelector("#textArea");
     keyboard=document.querySelector("#keyboard");
     addEventListeners();
     textArea.focus();
+    updateLetterCase();
+
 }
 
-function addEventListeners(){
-    keyboard.addEventListener('click', function(e){
-        if(e.target.classList.contains('key')){
-            handleVirtualKeyPress(e.target);
+function addEventListeners() {
+    keyboard.addEventListener('mousedown', function (e) {
+        if (e.target.classList.contains('key')) {
+            handleVirtualKeyPress(e.target); 
+
+            holdTimeout = setTimeout(() => {
+                keyRepeatInterval = setInterval(() => {
+                    handleVirtualKeyPress(e.target);
+                }, 28);
+            }, 500);
         }
     });
 
-    document.addEventListener('keydown',function(e){
+    keyboard.addEventListener('mouseup', function () {
+        clearTimeout(holdTimeout);
+        clearInterval(keyRepeatInterval);
+    });
+
+    keyboard.addEventListener('mouseleave', function () {
+        clearTimeout(holdTimeout);
+        clearInterval(keyRepeatInterval);
+    });
+
+    document.addEventListener('keydown', function (e) {
         handlePhysicalKeyPress(e);
     });
 
-    document.addEventListener('keyup',function(e){
+    document.addEventListener('keyup', function (e) {
         handlePhysicalKeyRelease(e);
     });
 
-    textArea.addEventListener('blur', function(){
-        setTimeout(function(){
-            textArea.focus();
-        },0);
+    textArea.addEventListener('blur', function () {
+        setTimeout(() => textArea.focus(), 0);
     });
 }
+
 
 function handleVirtualKeyPress(keyElement){
     let key=keyElement.getAttribute('data-key');
@@ -78,15 +99,18 @@ let keyMap = {
   'Tab': 'Tab', 'CapsLock': 'CapsLock',
   'ShiftLeft': 'ShiftLeft', 'ShiftRight': 'ShiftRight',
   'ControlLeft': 'ControlLeft', 'ControlRight': 'ControlRight',
-  'AltLeft': 'AltLeft', 'AltRight': 'AltRight'
+  'AltLeft': 'AltLeft', 'AltRight': 'AltRight','|': '\\' ,'\\':'\\'
 };
 
     let mappedKey=keyMap[keyCode] || keyCode;
-    if (mappedKey === '\\') {
-    return document.querySelector('[data-key="\\\\"]') || document.querySelector('[data-key="\\"]');
-}
 
-    return document.querySelector('[data-key="'+ mappedKey +'"]');
+    if (mappedKey === '\\') {
+    return document.querySelector('[data-key="\\\\"]') 
+}
+    else{
+            return document.querySelector('[data-key="'+ mappedKey +'"]');
+
+    }
 }
 
 function processKey(key){
@@ -111,8 +135,8 @@ function processKey(key){
     else if(key==='Space' || key===' '){
         insertText(' ');
     }
-    else if (key === '\\') {
-    insertCharacter('\\');
+    else if (key === '\\' || key==='|') {
+    insertCharacter(key);
 }
 
     else if(key.length===1){
@@ -197,7 +221,21 @@ function toggleCapsLock(){
     else{
         capsKey.style.background='rgba(255, 255, 255, 0.2)';
     }
+    updateLetterCase();
 }
+
+function updateLetterCase() {
+    const letterKeys = document.querySelectorAll('.key[data-key]');
+
+    letterKeys.forEach(key => {
+        let keyVal = key.getAttribute('data-key');
+
+        if (/^[a-z]$/.test(keyVal)) {
+            key.textContent = capsLock ? keyVal.toUpperCase() : keyVal.toLowerCase();
+        }
+    });
+}
+
 function toggleShift(){
     shift=!shift;
     updateShiftKeys();
